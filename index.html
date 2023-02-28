@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/7.15.4/video.min.js"></script>
+</head>
+<body>
+<style>
+    #channel-select {
+        padding: 8px;
+        font-size: 16px;
+        border: none;
+        background-color: #f2f2f2;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        width: 250px;
+        margin-bottom: 20px;
+    }
+    css
+    Copy code
+    #channel-select option {
+        font-size: 14px;
+    }
+</style>
+<video id="my-video" class="video-js vjs-default-skin" controls preload="auto" width="640" height="360" data-setup='{ "fluid": true }'>
+    <source src="tv_channels_SabSmulik60.m3u" type="application/x-mpegURL">
+</video>
+<select id="channel-select">
+    <option value="-1">Select a channel</option>
+</select>
+<script>
+    var player = videojs('my-video');
+    var channelSelect = document.getElementById("channel-select");
+    var m3uUrl = "tv_channels_SabSmulik60.m3u";
+    var channels = [];
+    var channelIndex = -1;
+
+    function selectChannel() {
+        channelIndex = channelSelect.value;
+        if (channelIndex >= 0 && channelIndex < channels.length) {
+            var selectedChannelName = channels[channelIndex].name;
+            var selectedChannelUrl = "channels/" + selectedChannelName.toLowerCase().replaceAll(" ", '_') + ".m3u";
+            player.src({
+                src: selectedChannelUrl,
+                type: 'application/x-mpegURL'
+            });
+            player.play();
+            var videoElements = document.getElementsByTagName('video');
+            for (var i = 0; i < videoElements.length; i++) {
+                videoElements[i].src = selectedChannelUrl;
+            }
+        }
+    }
+
+
+    function loadChannels() {
+        fetch(m3uUrl)
+            .then(response => response.text())
+            .then(data => {
+                var lines = data.trim().split('\n');
+                var name, url;
+                for (var i = 0; i < lines.length; i++) {
+                    if (lines[i].startsWith('#EXTINF:')) {
+                        name = lines[i].split(',')[1];
+                    } else if (lines[i].startsWith('http')) {
+                        url = lines[i];
+                        channels.push({
+                            name: name,
+                            url: url
+                        });
+                    }
+                }
+                for (var i = 0; i < channels.length; i++) {
+                    var option = document.createElement("option");
+                    option.text = channels[i].name;
+                    option.value = i;
+                    channelSelect.add(option);
+                }
+            });
+    }
+
+    channelSelect.addEventListener("change", selectChannel);
+    loadChannels();
+</script>
+</body>
+</html>
