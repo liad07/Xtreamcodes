@@ -12,7 +12,9 @@ This will prompt you to enter the server URL, port ID, username, and password. O
 # Stage 2: Parsing M3U Playlist
 Once you have the M3U playlist URL, you can use it to retrieve the list of channels in the playlist. To do this, you need to run the script parse_m3u.py:
 
-``` python parse_m3u.py```
+``` python
+parse_m3u.py
+```
 This will prompt you to enter the path to the M3U file you want to parse. Once you have entered this, the script will parse the file and generate individual M3U files for each channel in the playlist. These files will be named after the channel name, with all spaces replaced with underscores.
 
 # Stage 3: Playing IPTV Channels
