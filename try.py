@@ -1,4 +1,4 @@
-m3u_file = 'tv_channels_SabSmulik60.m3u'
+m3u_file = input("enter path of m3u file to parse\n")
 
 with open(m3u_file) as f:
     lines = f.readlines()
